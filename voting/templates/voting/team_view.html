@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Team View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .team-card {
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .team-card img {
+            max-width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .team-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .team-info h2 {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background-color: #007bff;
+            color: #fff;
+            margin: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        /* Voting events style */
+        .voting-events h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .voting-events ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .voting-events li {
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .voting-events a {
+            text-decoration: none;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .voting-status-container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-clock {
+            font-size: 14px;
+        }
+
+        @media screen and (max-width: 600px) {
+            /* Responsive styles for screens up to 600px width */
+            .team-info {
+                flex-direction: column;
+            }
+
+            .team-info h2 {
+                margin-bottom: 5px;
+            }
+
+            .team-card img {
+                max-width: 100px;
+                margin: 0 auto 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'voting/navbar.html' %}
+
+    <div class="voting-events">
+        <div class="team-card">
+            <h1>Team: {{ team.name }}</h1>
+            <img src="{{ team.image_profile }}" alt="Team Profile">
+            <div class="team-info">
+                <h2>Wins: {{ wins }}</h2>
+                <h2>Losses: {{ losses }}</h2>
+                <h2>T Scores: {{ total_scores }}</h2>
+                <h2>T Competitions: {{ total_competitions }}</h2>
+            </div>
+        </div>
+        <h1>List of Competitions Participated</h1>
+        <ul>
+            {% for event in competitions_participated %}
+                <li>
+                    <a href="{% url 'vote' event_id=event.id %}">{{ event.name }}</a>
+                    <div class="voting-status-container">
+                        {% if event.is_voting_active %}
+                            <span class="status-circle"></span> Voting is active.
+                        {% else %}
+                            <span class="status-clock">🕒</span> Voting has ended at {{ event.end_time|date:"D, d M Y H:i:s" }}.
+                        {% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+</body>
+</html>

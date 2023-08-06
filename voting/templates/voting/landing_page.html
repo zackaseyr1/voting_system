@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Voting Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex; /* Use flexbox to align items horizontally */
+        }
+
+        nav li {
+            margin-right: 20px;
+        }
+
+        nav li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: grid; /* Use grid layout for the container */
+            grid-template-columns: repeat(3, 1fr); /* Three columns with equal width */
+            gap: 20px; /* Add some space between the cards */
+        }
+
+        li {
+            padding: 10px;
+            border-radius: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+
+        .voting-status-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-clock {
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        .voting-status.active {
+            color: green;
+        }
+
+        .voting-status.ended {
+            color: red;
+        }
+
+        .voting-status.upcoming {
+            color: #007bff;
+        }
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .landing-card {
+            padding: 20px;
+            border-radius: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+
+        .landing-card img {
+            max-width: 150px;
+            height: auto;
+            display: block;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .landing-card h2 {
+            padding: 10px 15px;
+            border-radius: 10px;
+            background-color: #007bff;
+            color: #fff;
+            margin: 0;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            margin-bottom: 10px;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+   {% include 'voting/navbar.html' %}
+    <h1>Voting Events</h1>
+    <ul>
+        {% for event in events %}
+            <li>
+                <a href="{% url 'vote' event_id=event.id %}">{{ event.name }}</a>
+                <div class="voting-status-container">
+                    {% if event.is_voting_active %}
+                        <span class="status-circle"></span> Voting is active.
+                    {% else %}
+                        <span class="status-clock">🕒</span> Voting has ended at {{ event.end_time|date:"D, d M Y H:i:s" }}.
+                    {% endif %}
+                </div>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <div class="landing-card">
+        <h2>Featured Events</h2>
+        <ul>
+            <li><a href="#">Event 1</a></li>
+            <li><a href="#">Event 2</a></li>
+            <li><a href="#">Event 3</a></li>
+            <!-- Add more featured events as needed -->
+        </ul>
+    </div>
+
+    <div class="landing-card">
+        <h2>Latest News</h2>
+        <ul>
+            <li><a href="#">News Article 1</a></li>
+            <li><a href="#">News Article 2</a></li>
+            <li><a href="#">News Article 3</a></li>
+            <!-- Add more latest news articles as needed -->
+        </ul>
+    </div>
+</body>
+</html>
+

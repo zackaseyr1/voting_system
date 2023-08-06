@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voting Results - {{ event.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .voting-status-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .status-circle {
+            width: 10px;
+            height: 10px;
+            background-color: green;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+
+        .status-clock {
+            font-size: 14px;
+            margin-right: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+        th, td {
+            padding: 8px;
+            border: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        canvas {
+            width: 100%;
+            height: 200px; /* Smaller height for the graph */
+        }
+
+        p {
+            margin: 0;
+            padding: 5px;
+        }
+
+        @media screen and (max-width: 600px) {
+            /* Adjust table layout for smaller screens */
+            th, td {
+                padding: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    {% include 'voting/navbar.html' %}
+
+    <h2>Voting Results - {{ event.name }}</h2>
+    <div class="voting-status-container">
+        {% if event.is_voting_active %}
+            <span class="status-circle"></span> Voting is  active.
+        {% else %}
+            <span class="status-clock">🕒</span> Voting has ended at {{ event.end_time|date:"D, d M Y H:i:s" }}.
+        {% endif %}
+    </div>
+    </br>
+    <table>
+        <thead>
+            <tr>
+                <th>Competitor Name</th>
+                <th>Team Name</th>
+                <th>Score</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for competitor in competitors %}
+                <tr>
+                    <td>Competitor {{ competitor.id }}</td>
+                    <td>{{ competitor.team.name }}</td>
+                    <td>{{ competitor.score }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% if graph_file_path %}
+        <!-- Use 'graph_file_path' instead of 'graph_file_path_url' -->
+    {% else %}
+        <p>No graph available for this event.</p>
+    {% endif %}
+
+    <!-- Add a canvas element to render the graph with smaller size -->
+    <canvas id="myChart"></canvas>
+
+    <!-- Include the Chart.js library -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        // Initialize myChart as a global variable
+        let myChart;
+
+        // Function to initialize the graph
+        function initGraph(labels, scores) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            myChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Scores',
+                        data: scores,
+                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        borderWidth: 1,
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Function to update the graph
+        function updateGraph() {
+            const event_id = {{ event.id }};
+            const url = `/get_latest_voting_results/${event_id}/`;
+
+            axios.get(url)
+                .then(response => {
+                    // Extract data from the server response
+                    const labels = response.data.labels;
+                    const scores = response.data.scores;
+
+                    if (!myChart) {
+                        // If myChart is not initialized, initialize the graph
+                        initGraph(labels, scores);
+                    } else {
+                        // If myChart is already initialized, update the graph data
+                        myChart.data.labels = labels;
+                        myChart.data.datasets[0].data = scores;
+                        myChart.update();
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching voting results:', error);
+                });
+        }
+
+        // Call updateGraph once to initialize the graph
+        updateGraph();
+
+        // Update the graph every 5 seconds (adjust the interval as needed)
+        setInterval(updateGraph, 5000);
+    </script>
+
+</body>
+</html>

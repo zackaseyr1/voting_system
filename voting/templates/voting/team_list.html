@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Team List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+            display: grid; /* Use grid layout for the container */
+            grid-template-columns: repeat(3, 1fr); /* Three columns with equal width */
+            gap: 20px; /* Add some space between the cards */
+        }
+
+        li {
+            padding: 10px;
+            border-radius: 20px;
+            background-color: #f9f9f9;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        li a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    {% include 'voting/navbar.html' %}
+
+    <h1>Team List</h1>
+    <ul>
+        {% for team in teams %}
+            <li>
+                <a href="{% url 'team_view' team_id=team.id %}">{{ team.name }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>

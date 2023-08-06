@@ -1,0 +1,40 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>View Voting Events</title>
+    <style>
+       
+
+    
+        nav ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex; /* Use flexbox to align items horizontally */
+        }
+
+        nav li {
+            margin-right: 20px;
+        }
+
+        nav li a {
+            text-decoration: none;
+            color: #333;
+        }
+
+       
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav>
+            <ul>
+                <li><a href="{% url 'view_events' %}">Home</a></li>
+                <li><a href="{% url 'team_list' %}">Team List</a></li>
+            </ul>
+        </nav>
+    </div>
+    
+</body>
+</html>
